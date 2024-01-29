@@ -122,6 +122,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jLabel5.setText("Estado:");
 
         btnAtualizar.setText("Atualizar");
+        btnAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtualizarActionPerformed(evt);
+            }
+        });
 
         jMenuItemSair.setText("Opções");
         jMenuItemSair.addActionListener(new java.awt.event.ActionListener() {
@@ -316,14 +321,38 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
-        txtNome.setText("");
-        txtCpf.setText("");
-        txtTelefone.setText("");
-        txtEndereco.setText("");
-        txtCidade.setText("");
-        txtNumero.setText("");
-        txtEstado.setText("");
+        limparCampos();
     }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+       int linhaSelecionada = tabelaClientes.getSelectedRow();
+       Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
+
+         String nome = txtNome.getText();
+         String cpff = txtCpf.getText();
+         String tel = txtTelefone.getText();
+         String end = txtEndereco.getText();
+         String city = txtCidade.getText();
+         String number = txtNumero.getText();
+         String estado = txtEstado.getText();
+   
+       if(linhaSelecionada >= 0) {
+          if(!isCamposValidos(nome, cpff, tel, end, number, city, estado)) {
+                      JOptionPane.showMessageDialog(null, "Existem campos a serem preenchidos", "Erro", JOptionPane.INFORMATION_MESSAGE);
+                      return;
+         }
+         Cliente cliente = new Cliente(nome,cpff,tel, end, number, city, estado);
+         this.clienteDAO.excluir(cpf);
+         modelo.removeRow(linhaSelecionada);
+
+         this.clienteDAO.alterar(cliente);
+         modelo.addRow(new Object[] {cliente.getNome(), cliente.getCpf(), cliente.getTel(), cliente.getEnd(), cliente.getNumero(), cliente.getCidade(), cliente.getEstado()});
+             
+         limparCampos();
+
+         
+       }
+    }//GEN-LAST:event_btnAtualizarActionPerformed
 
     /**
      * @param args the command line arguments
